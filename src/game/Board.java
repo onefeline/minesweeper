@@ -35,6 +35,8 @@ public class Board extends JPanel {
 		this.xSize = x_size;
 		this.ySize = y_size;
 		
+		this.gameState = GameState.OK;
+		
 		this.mineField = new MineCell[xSize][ySize];
 		this.numBombs = num_bombs;
 		
@@ -68,12 +70,16 @@ public class Board extends JPanel {
 				
 				this.mineField[x][y].addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
+						if (gameState == GameState.GAME_OVER) {
+							return;
+						}
+						
 						JButton btn = (JButton) e.getSource();
 						
 						int x_pos = Integer.valueOf((String) btn.getClientProperty("x"));
 						int y_pos = Integer.valueOf((String) btn.getClientProperty("y"));
 						
-					    clickSpot(x_pos, y_pos);
+						gameState = clickSpot(x_pos, y_pos);
 					}
 				
 				});
@@ -253,9 +259,17 @@ public class Board extends JPanel {
 		
 	}
 	
+	public GameState getGameState() {
+		return gameState;
+	}
+	
 	private MineCell [][] mineField;
 	private int xSize;
 	private int ySize;
 	private int numBombs;
+	
+	private GameState gameState;
+
+	
 
 }
