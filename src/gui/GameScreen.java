@@ -19,8 +19,8 @@ public class GameScreen {
         JFrame frame = new JFrame("MineSweeperSwing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
-        GameManager gameManager = new GameManager();
-        gameManager.startNewGame(20, 20, 40);
+        // There is no need to start a new game because by creating the game manager a new game started as well
+        GameManager gameManager = new GameManager(20, 20, 40);
         
         frame.getContentPane().add(gameManager.getGameBoard());
  
