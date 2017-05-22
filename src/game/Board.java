@@ -3,9 +3,16 @@ package game;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import javafx.util.Pair;
+
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -104,19 +111,23 @@ public class Board extends JPanel {
 	private void randomlyPlaceBombs() {
 		int num_bombs_placed = 0;
 		
-		// Randomly place all of the bombs on the gameboard
-		while (num_bombs_placed < this.numBombs) {
-			int x_spot = ThreadLocalRandom.current().nextInt(0, this.xSize);
-			int y_spot = ThreadLocalRandom.current().nextInt(0, this.ySize);
-			
-			// If this spot is already used occupied by a bomb, then simply recalculate a new spot to place the bomb.
-			// Yes, this is bad code because it is inefficient. Ideally, we would not be considering spots where a bomb
-			// has already been placed.
-			if (this.mineField[x_spot][y_spot].getCellType() == CellType.BOMB) {
-				continue;
+		Vector<Pair<Integer, Integer>> all_coords = new Vector<Pair<Integer, Integer>>(this.xSize * this.ySize);
+		
+		// Shuffle all possible locations so we pick random ones to place the bombs
+		for (int i = 0; i < this.xSize; ++i) {
+			for (int j = 0; j < this.ySize; ++j) {
+				all_coords.add(new Pair<Integer, Integer>(i, j));
 			}
+		}
+		Collections.shuffle(all_coords);
+		
+		
+		// Randomly place all of the bombs on the gameboard
+		for (Iterator<Pair<Integer, Integer>> iter = all_coords.iterator();
+				num_bombs_placed < this.numBombs;) {
+			Pair<Integer, Integer> current_spot = iter.next();
 			
-			this.mineField[x_spot][y_spot].setCellType(CellType.BOMB);
+			this.mineField[current_spot.getKey()][current_spot.getValue()].setCellType(CellType.BOMB);
 			num_bombs_placed++;
 		}
 	}
